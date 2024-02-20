@@ -52,7 +52,7 @@ class AnswerFragment : Fragment() {
         val question = topic.questions[currentQuestionIndex!!]
 
         rootView.findViewById<TextView>(R.id.user_answer).text = getString(R.string.user_answer, question.options[selectedOption!!])
-        rootView.findViewById<TextView>(R.id.correct_answer).text = getString(R.string.correct_answer, question.options[question.correctAnswerIndex])
+        rootView.findViewById<TextView>(R.id.correct_answer).text = getString(R.string.correct_answer, question.options[question.correctAnswerIndex - 1])
         rootView.findViewById<TextView>(R.id.performance).text = getString(R.string.performance, correctAnswerCount, topic.questions.size)
 
         val nextFinishButton = rootView.findViewById<Button>(R.id.next_finish_button)

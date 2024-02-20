@@ -2,6 +2,9 @@ package edu.uw.ischool.xyou.quizdroid
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 
 class QuizActivity :
     AppCompatActivity(),
@@ -20,8 +23,11 @@ class QuizActivity :
         val topicName = intent.getStringExtra("topicName").toString()
 
         // customize toolbar
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.title = topicName
+        // setup toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.findViewById<TextView>(R.id.title).text = topicName
+        // hide menu button
+        toolbar.findViewById<TextView>(R.id.preferences).isVisible = false
 
         // grab topic data
         val app = application as QuizApp
@@ -43,7 +49,7 @@ class QuizActivity :
     }
 
     override fun onSubmitButtonClicked(selectedAnswer: Int) {
-        if (selectedAnswer == topic.questions[currentQuestionIndex].correctAnswerIndex) {
+        if (selectedAnswer + 1 == topic.questions[currentQuestionIndex].correctAnswerIndex) {
             correctAnswerCount++
         }
 
@@ -62,9 +68,5 @@ class QuizActivity :
             .replace(R.id.fragment_container, fragment, "QuestionFragment")
             .addToBackStack(null)
             .commit()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 }

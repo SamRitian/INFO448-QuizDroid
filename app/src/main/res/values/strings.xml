@@ -7,4 +7,8 @@
     <string name="correct_answer">Correct answer: %1$s</string>
     <string name="performance">You have %1$d out of %2$d correct</string>
     <string name="next_finish_button">%1$s</string>
+    <string name="preferences">Preferences</string>
+    <string name="save">Save</string>
+    <string name="url">URL for Question Data: </string>
+    <string name="frequency">Download Frequency: </string>
 </resources>
