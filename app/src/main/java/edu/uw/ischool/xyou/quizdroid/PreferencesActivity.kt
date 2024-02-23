@@ -1,8 +1,10 @@
 package edu.uw.ischool.xyou.quizdroid
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -32,20 +34,28 @@ class PreferencesActivity : AppCompatActivity() {
 
             // check the input
             if (url == "" || frequency.toString() == "") {
-                Toast.makeText(this, "Input fields can't be empty", Toast.LENGTH_SHORT).show()
 
                 if (frequency == 0) {
                     Toast.makeText(this, "Frequency should be greater than 0", Toast.LENGTH_SHORT).show()
                 }
             } else {
+                Log.i(TAG, "Saving preferences")
+
                 editor.apply {
                     putString("url", url)
                     putInt("frequency", frequency)
                     apply()
                 }
 
-                // exit the activity
-                finish()
+                // restart the service
+                var intent = Intent(this, DownloadService::class.java)
+                stopService(intent)
+
+                intent = Intent(this, DownloadService::class.java).apply {
+                    putExtra("url", url)
+                    putExtra("frequency", frequency)
+                }
+                startService(intent)
             }
         }
     }

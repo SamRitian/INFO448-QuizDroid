@@ -11,4 +11,7 @@
     <string name="save">Save</string>
     <string name="url">URL for Question Data: </string>
     <string name="frequency">Download Frequency: </string>
+    <string name="channel_name">QuizDroid</string>
+    <string name="channel_description">QuizDroid Notifications</string>
+    <string name="refresh">Refresh</string>
 </resources>

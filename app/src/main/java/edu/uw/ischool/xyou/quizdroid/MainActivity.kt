@@ -2,22 +2,25 @@ package edu.uw.ischool.xyou.quizdroid
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.ImageView
 import android.widget.SimpleAdapter
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
-    private val defaultUrl = "http://tednewardsandbox.site44.com/questions.json"
-    private val defaultFreq = 10
+    private var url = "https://tednewardsandbox.site44.com/questions.json"
+    private var frequency = 10
 
-    private var url: String? = null
-    private var frequency: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i(TAG, "Creating MainActivity")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -27,6 +30,26 @@ class MainActivity : AppCompatActivity() {
         toolbar.findViewById<ImageView>(R.id.preferences).setOnClickListener {
             handlePreferencesClicked()
         }
+        toolbar.findViewById<ImageView>(R.id.refresh).setOnClickListener {
+            refreshListView()
+        }
+
+        // check connectivity
+        checkConnectivity()
+
+        // load preferences
+        loadPreferences()
+
+        // download data
+        startBackgroundService()
+    }
+
+    override fun onResume() {
+        Log.i(TAG, "Resuming MainActivity")
+        super.onResume()
+
+        // check connectivity
+        checkConnectivity()
 
         // load preferences
         loadPreferences()
@@ -38,39 +61,75 @@ class MainActivity : AppCompatActivity() {
         renderTopicList(topics)
     }
 
+    private fun refreshListView() {
+        val topics = loadData()
+        renderTopicList(topics)
+    }
+
+    private fun checkConnectivity() {
+        if (!isOnline(this)) {
+            if (isAirplaneModeOn(this)) {
+                AlertDialog.Builder(this)
+                    .setTitle("No Internet Connection")
+                    .setMessage("Airplane mode is on. Would you like to turn it off?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        goToSettings(this)
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            }
+        }
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
+
+    private fun isAirplaneModeOn(context: Context): Boolean {
+        return Settings.System.getInt(
+            context.contentResolver,
+            Settings.Global.AIRPLANE_MODE_ON,
+            0
+        ) != 0
+    }
+
+    private fun goToSettings(context: Context) {
+        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+        startActivity(intent)
+    }
+
     private fun handlePreferencesClicked() {
-        Log.i(TAG, "Preferences clicked")
         val intent = Intent(this, PreferencesActivity::class.java)
         startActivity(intent)
     }
 
     private fun loadPreferences() {
-        Log.i(TAG, "Loading preferences")
         val sharedPref = getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        url = sharedPref.getString("url", defaultUrl).toString() // default to the given url
-        frequency = sharedPref.getInt("frequency", defaultFreq) // default to 0
+        url = sharedPref.getString("url", url).toString() // default to the given url
+        frequency = sharedPref.getInt("frequency", frequency) // default to 0
 
         val editor = sharedPref.edit()
-        if (url == defaultUrl) {
-            editor.apply {
-                putString("url", defaultUrl)
-                apply()
-            }
-        }
-        if (frequency == defaultFreq) {
-            editor.apply {
-                putInt("frequency", defaultFreq)
-                apply()
-            }
+        editor.apply {
+            putString("url", url)
+            putInt("frequency", frequency)
+            apply()
         }
     }
 
+    private fun startBackgroundService() {
+        val intent = Intent(this, DownloadService::class.java).apply {
+            putExtra("url", url)
+            putExtra("frequency", frequency)
+        }
+        startService(intent)
+    }
+
     private fun loadData(): List<Topic> {
-        val app = application as QuizApp
-
-        // do something with the InMemoryTopicRepository
-
-        return app.topicRepository.getTopics()
+        // get data from the repository
+        val repository = InMemoryTopicRepository(this)
+        return repository.getTopics()
     }
 
     private fun renderTopicList(topics: List<Topic>) {

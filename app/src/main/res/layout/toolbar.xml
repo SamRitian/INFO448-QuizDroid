@@ -22,6 +22,16 @@
             android:layout_centerVertical="true" />
 
         <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/refresh"
+            android:src="@drawable/refresh_24"
+            android:layout_centerVertical="true"
+            android:layout_margin="20sp"
+            android:layout_toStartOf="@id/preferences"/>
+
+        <ImageView
             android:id="@+id/preferences"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

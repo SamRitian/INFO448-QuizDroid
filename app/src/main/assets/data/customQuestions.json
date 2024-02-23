@@ -1,0 +1,66 @@
+[
+  {
+    "title": "Math",
+    "desc": "Quizzes about basic arithmetic, algebra, geometry, and more.",
+    "questions": [
+      {
+        "text": "What is 2 + 2?",
+        "answers": ["3", "4", "5", "6"],
+        "answer": 1
+      },
+      {
+        "text": "What is 3 * 5?",
+        "answers": ["8", "12", "15", "18"],
+        "answer": 2
+      },
+      {
+        "text": "What is 10 - 7?",
+        "answers": ["1", "2", "3", "4"],
+        "answer": 2
+      }
+    ]
+  },
+  {
+    "title": "Physics",
+    "desc": "Quizzes about forces, energy, motion, and more.",
+    "questions": [
+      {
+        "text": "What force pulls objects toward Earth?",
+        "answers": ["Magnetism", "Gravity", "Friction", "Tension"],
+        "answer": 1
+      },
+      {
+        "text": "What is the unit of force?",
+        "answers": ["Newton", "Joule", "Watt", "Volt"],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "title": "Marvel Super Heroes",
+    "desc": "Quizzes about Marvel characters and their stories.",
+    "questions": [
+      {
+        "text": "What is the real name of Thor?",
+        "answers": ["Tony Stark", "Steve Rogers", "Bruce Banner", "Thor Odinson"],
+        "answer": 3
+      },
+      {
+        "text": "What is the real name of Captain America?",
+        "answers": ["Tony Stark", "Steve Rogers", "Bruce Banner", "Thor Odinson"],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "title": "Android Programming",
+    "desc": "Quizzes about Android app development using Java and Kotlin.",
+    "questions": [
+      {
+        "text": "What is the programming language used for Android app development in INFO 448?",
+        "answers": ["Java", "Kotlin", "Swift", "Objective-C"],
+        "answer": 1
+      }
+    ]
+  }
+]
