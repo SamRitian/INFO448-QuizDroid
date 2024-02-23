@@ -3,6 +3,7 @@ package edu.uw.ischool.xyou.quizdroid
 import android.content.Context
 import android.util.Log
 import org.json.JSONArray
+import java.io.File
 import java.io.IOException
 
 class InMemoryTopicRepository(context: Context) : TopicRepository {
@@ -18,8 +19,17 @@ class InMemoryTopicRepository(context: Context) : TopicRepository {
 
     private fun readSavedData(context: Context):String {
         val filename = "new_questions.json"
+        val jsonString = context.assets.open("data/questions.json").bufferedReader().use { it.readText() }
+
+        val file = File(context.getFilesDir(), filename)
+        if (!file.exists()) {
+            Log.i(TAG, "File does not exist")
+            file.createNewFile()
+            file.writeText(jsonString)
+        }
+
         return try {
-            context.openFileInput(filename).use { inputStream ->
+             context.openFileInput(filename).use { inputStream ->
                 inputStream.bufferedReader().use { it.readText() }
             }
         } catch (e: IOException) {
